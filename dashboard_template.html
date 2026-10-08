@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok accounts</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --wash: rgba(11, 11, 11, 0.045);
+  --series: #2a78d6;
+  --up: #006300;
+  --down: #c02f2f;
+  --good: #0ca30c;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+  --info: #898781;
+  --shadow: 0 6px 24px rgba(11, 11, 11, 0.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --wash: rgba(255, 255, 255, 0.06);
+    --series: #3987e5;
+    --up: #0ca30c;
+    --down: #e66767;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --wash: rgba(255, 255, 255, 0.06);
+  --series: #3987e5;
+  --up: #0ca30c;
+  --down: #e66767;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; }
+a { color: inherit; text-decoration-color: var(--axis); text-underline-offset: 2px; }
+a:hover { text-decoration-color: currentColor; }
+h1 { font-size: 24px; line-height: 1.2; margin: 0 0 4px; font-weight: 650; letter-spacing: -0.01em; }
+h2 { font-size: 16px; margin: 0 0 12px; font-weight: 600; }
+h3 { font-size: 18px; margin: 0; font-weight: 600; }
+.meta { color: var(--ink-2); margin: 0; }
+.panel, .card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+/* hero + tiles */
+.hero { display: grid; grid-template-columns: minmax(220px, 1.3fr) repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.tile .label { color: var(--ink-2); font-size: 13px; }
+.tile .value { font-size: 22px; font-weight: 600; margin-top: 2px; white-space: nowrap; }
+.tile .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.tile.hero-tile .value { font-size: 48px; line-height: 1.05; letter-spacing: -0.02em; }
+.delta { font-size: 13px; font-weight: 500; margin-left: 6px; }
+.delta.up { color: var(--up); }
+.delta.down { color: var(--down); }
+.delta.flat { color: var(--muted); }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tile.hero-tile { grid-column: 1 / -1; }
+}
+
+/* tables */
+.table-wrap { overflow-x: auto; margin: 0 -4px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--grid); white-space: nowrap; vertical-align: top; }
+th { color: var(--ink-2); font-weight: 500; font-size: 12px; user-select: none; }
+th button { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+th button:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; border-radius: 2px; }
+th[aria-sort] button::after { content: "↓"; color: var(--ink); }
+th[aria-sort="ascending"] button::after { content: "↑"; }
+td.num, th.num { text-align: right; }
+th.num button { flex-direction: row-reverse; }
+tbody tr:hover { background: var(--wash); }
+td.caption { white-space: normal; min-width: 220px; max-width: 420px; color: var(--ink-2); }
+td .sub { color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+
+/* flags */
+.flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.flag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; background: var(--wash); font-size: 13px; color: var(--ink); }
+.flag svg, .flag-icon { width: 14px; height: 14px; flex: none; }
+.flag-icons { display: inline-flex; gap: 4px; }
+
+/* cards */
+.card header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.handle { color: var(--ink-2); }
+.badge { font-size: 12px; color: var(--ink-2); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; margin-left: 6px; }
+.bio { color: var(--ink-2); margin: 8px 0 0; white-space: pre-line; max-width: 720px; }
+.card .tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.card .tile { background: transparent; padding: 10px 12px; }
+.card .tile .value { font-size: 18px; }
+@media (max-width: 860px) { .card .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .card .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+figure { margin: 20px 0 0; }
+figcaption { color: var(--ink-2); font-size: 13px; margin-bottom: 8px; }
+figcaption b { color: var(--ink); font-weight: 600; }
+.chart-box { width: 100%; min-height: 200px; position: relative; }
+.chart-box svg { display: block; overflow: visible; }
+.chart-box .grid { stroke: var(--grid); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-box .axis { stroke: var(--axis); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-box .ref { stroke: var(--ink-2); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-box .tick, .chart-box .xlab { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.chart-box .reflab { fill: var(--ink-2); font-size: 11px; }
+.chart-box .bar { fill: var(--series); }
+.chart-box .bar.fresh { fill-opacity: 0.4; }
+.chart-box .hit { fill: transparent; cursor: pointer; }
+.chart-box .hit.on { fill: var(--wash); }
+details { margin-top: 16px; }
+summary { cursor: pointer; color: var(--ink-2); padding: 4px 0; }
+summary:hover { color: var(--ink); }
+details .table-wrap { margin-top: 8px; }
+.empty { color: var(--ink-2); margin: 12px 0 0; }
+.notes { list-style: none; margin: 12px 0 0; padding: 0; }
+.notes li { margin-top: 4px; color: var(--ink-2); }
+.notes time { color: var(--muted); margin-right: 8px; font-variant-numeric: tabular-nums; }
+.notes-title { color: var(--ink-2); font-size: 13px; margin-top: 14px; font-weight: 500; }
+
+/* tooltip */
+.tip {
+  position: fixed; z-index: 10; pointer-events: none;
+  max-width: 300px; padding: 10px 12px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
+  font-size: 13px; color: var(--ink);
+}
+.tip .t-date { color: var(--muted); font-size: 12px; }
+.tip .t-val { font-size: 18px; font-weight: 600; margin: 2px 0; }
+.tip .t-row { color: var(--ink-2); }
+.tip .t-cap { color: var(--ink-2); margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tip .t-hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>TikTok accounts</h1>
+    <p class="meta" id="meta"></p>
+  </header>
+  <section class="hero" id="hero" aria-label="Totals"></section>
+  <section class="panel" id="general-notes" hidden>
+    <h2>Notes</h2>
+    <ul class="notes"></ul>
+  </section>
+  <section class="panel">
+    <h2>Accounts</h2>
+    <div class="table-wrap"><table id="overview"></table></div>
+  </section>
+  <div id="cards"></div>
+</main>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<script>const REPORT = /*__DATA__*/null;</script>
+<script>
+(() => {
+  const R = REPORT;
+  const $ = (sel, el = document) => el.querySelector(sel);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const full = x => x == null ? "—" : Number(x).toLocaleString("en-US");
+  const compact = x => {
+    if (x == null) return "—";
+    const a = Math.abs(x);
+    for (const [d, s] of [[1e6, "M"], [1e3, "K"]]) if (a >= d) return (x / d).toFixed(a >= d * 100 ? 0 : 1).replace(/\.0$/, "") + s;
+    return String(Math.round(x));
+  };
+  const pct = x => x == null ? "—" : (x * 100).toFixed(1) + "%";
+  const thisYear = new Date().getFullYear();
+  const date = (ts, time) => {
+    if (ts == null) return "—";
+    const d = new Date(ts * 1000);
+    const o = { day: "numeric", month: "short" };
+    if (d.getFullYear() !== thisYear) o.year = "numeric";
+    if (time) Object.assign(o, { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleString("en-US", o);
+  };
+  const ago = days => days == null ? "—" : days < 1 ? `${Math.max(1, Math.round(days * 24))} h ago` : `${Math.round(days)} d ago`;
+  const delta = (x, fmt = compact) => {
+    if (x == null) return "";
+    const cls = x > 0 ? "up" : x < 0 ? "down" : "flat";
+    return `<span class="delta ${cls}">${x > 0 ? "+" : x < 0 ? "−" : "±"}${fmt(Math.abs(x))}</span>`;
+  };
+
+  const ICON = {
+    critical: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--critical)"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    warning: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l7 12.5H1z" fill="var(--warning)" stroke="var(--warning)" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v3.6" stroke="#0b0b0b" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.8" r="0.95" fill="#0b0b0b"/></svg>',
+    good: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--good)"/><path d="M4.8 8.3l2.2 2.2 4.2-4.6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    info: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--info)"/><path d="M8 7.2v4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="4.9" r="1" fill="#fff"/></svg>',
+  };
+  const LEVEL = { critical: "Critical", warning: "Warning", good: "Good", info: "Info" };
+  const flagChip = f => `<span class="flag">${ICON[f.level]}<span>${esc(f.text)}</span></span>`;
+  const flagIcons = flags => flags.length
+    ? `<span class="flag-icons">${flags.map(f => `<span class="flag-icon" title="${esc(LEVEL[f.level] + ": " + f.text)}" role="img" aria-label="${esc(LEVEL[f.level] + ": " + f.text)}">${ICON[f.level]}</span>`).join("")}</span>`
+    : '<span class="sub">—</span>';
+  const tile = (label, value, sub = "", cls = "") =>
+    `<div class="tile ${cls}"><div class="label">${label}</div><div class="value">${value}</div>${sub ? `<div class="sub">${sub}</div>` : ""}</div>`;
+
+  /* ---------- sortable table ---------- */
+  function table(el, cols, rows, sortIdx = null, dir = -1) {
+    const draw = () => {
+      const sorted = rows.slice();
+      if (sortIdx != null) {
+        const k = cols[sortIdx].sort;
+        sorted.sort((a, b) => {
+          const x = k(a), y = k(b);
+          if (x == null && y == null) return 0;
+          if (x == null) return 1;
+          if (y == null) return -1;
+          return (x < y ? -1 : x > y ? 1 : 0) * dir;
+        });
+      }
+      el.innerHTML = `<thead><tr>${cols.map((c, i) => `<th class="${c.num ? "num" : ""}"${i === sortIdx ? ` aria-sort="${dir > 0 ? "ascending" : "descending"}"` : ""}>${c.sort ? `<button type="button" data-i="${i}">${c.label}</button>` : c.label}</th>`).join("")}</tr></thead>
+        <tbody>${sorted.map(r => `<tr>${cols.map(c => `<td class="${c.num ? "num" : ""} ${c.cls || ""}">${c.html(r)}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    };
+    el.addEventListener("click", e => {
+      const b = e.target.closest("th button");
+      if (!b) return;
+      const i = +b.dataset.i;
+      dir = i === sortIdx ? -dir : (cols[i].num ? -1 : 1);
+      sortIdx = i;
+      draw();
+      el.querySelector(`th button[data-i="${i}"]`).focus();
+    });
+    draw();
+  }
+
+  /* ---------- chart ---------- */
+  const tip = $("#tip");
+  function showTip(html, x, y) {
+    tip.innerHTML = html;
+    tip.hidden = false;
+    const r = tip.getBoundingClientRect(), pad = 12;
+    let left = x + 14, top = y + 14;
+    if (left + r.width > innerWidth - pad) left = x - r.width - 14;
+    if (top + r.height > innerHeight - pad) top = y - r.height - 14;
+    tip.style.left = Math.max(pad, left) + "px";
+    tip.style.top = Math.max(pad, top) + "px";
+  }
+  const hideTip = () => { tip.hidden = true; };
+
+  function niceTicks(max, count = 4) {
+    const raw = max / count, mag = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+    const step = [1, 2, 2.5, 5, 10].map(s => s * mag).find(s => s >= raw) || mag * 10;
+    const ticks = [];
+    for (let v = 0; v <= max + step * 0.999; v += step) ticks.push(Math.round(v));
+    return ticks.length > 1 ? ticks : [0, 1];
+  }
+  function barPath(x, top, w, h) {
+    if (h <= 0) return "";
+    const r = Math.min(4, w / 2, h), b = top + h;
+    return `M${x},${b}V${top + r}A${r},${r} 0 0 1 ${x + r},${top}H${x + w - r}A${r},${r} 0 0 1 ${x + w},${top + r}V${b}Z`;
+  }
+
+  function drawChart(box, acc) {
+    const vids = acc.videos.slice().reverse();
+    const med = acc.metrics.median_views;
+    const W = box.clientWidth, H = 200, m = { l: 44, r: 8, t: 18, b: 24 };
+    const pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const ticks = niceTicks(Math.max(1, ...vids.map(v => v.views)));
+    const top = ticks[ticks.length - 1];
+    const y = v => m.t + ph - (v / top) * ph;
+    const slot = pw / vids.length, bw = Math.max(2, Math.min(24, slot * 0.72));
+    let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Views of the last ${vids.length} videos by @${esc(acc.handle)}">`;
+    for (const t of ticks.slice(1)) {
+      s += `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}"/>`;
+    }
+    for (const t of ticks) s += `<text class="tick" x="${m.l - 8}" y="${y(t)}" text-anchor="end" dominant-baseline="middle">${compact(t)}</text>`;
+    vids.forEach((v, i) => {
+      const x = m.l + slot * i + (slot - bw) / 2;
+      const h = v.views > 0 ? Math.max(1, ph * v.views / top) : 0;
+      s += `<path class="bar${v.age_days != null && v.age_days < 1 ? " fresh" : ""}" d="${barPath(x, m.t + ph - h, bw, h)}"/>`;
+    });
+    s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}"/>`;
+    if (med != null && vids.length > 2) {
+      s += `<line class="ref" x1="${m.l}" x2="${W - m.r}" y1="${y(med)}" y2="${y(med)}"/>`;
+      s += `<text class="reflab" x="${W - m.r}" y="${y(med) - 5}" text-anchor="end">median ${compact(med)}</text>`;
+    }
+    if (vids.length) {
+      s += `<text class="xlab" x="${m.l}" y="${H - 6}">${date(vids[0].ts)}</text>`;
+      if (vids.length > 1) s += `<text class="xlab" x="${W - m.r}" y="${H - 6}" text-anchor="end">${date(vids[vids.length - 1].ts)}</text>`;
+    }
+    vids.forEach((v, i) => {
+      s += `<rect class="hit" data-i="${i}" x="${m.l + slot * i}" y="${m.t}" width="${slot}" height="${ph}"/>`;
+    });
+    s += "</svg>";
+    box.innerHTML = s;
+
+    const tipHtml = v => `<div class="t-date">${date(v.ts, true)} · ${ago(v.age_days)}</div>
+      <div class="t-val">${full(v.views)} views</div>
+      ${v.views_delta != null ? `<div class="t-row">${v.views_delta >= 0 ? "+" : "−"}${full(Math.abs(v.views_delta))} since last snapshot</div>` : ""}
+      <div class="t-row">likes ${compact(v.likes)} · comments ${compact(v.comments)} · shares ${compact(v.shares)} · saves ${compact(v.saves)}</div>
+      <div class="t-row">ER ${pct(v.er)}${v.duration ? ` · ${v.duration} s` : ""}</div>
+      ${v.caption ? `<div class="t-cap">${esc(v.caption)}</div>` : ""}
+      <div class="t-hint">Click to open the video</div>`;
+    let on = null;
+    box.onmousemove = e => {
+      const r = e.target.closest(".hit");
+      if (on && on !== r) on.classList.remove("on");
+      if (!r) { hideTip(); on = null; return; }
+      on = r; r.classList.add("on");
+      showTip(tipHtml(vids[+r.dataset.i]), e.clientX, e.clientY);
+    };
+    box.onmouseleave = () => { if (on) on.classList.remove("on"); on = null; hideTip(); };
+    box.onclick = e => {
+      const r = e.target.closest(".hit");
+      if (r) window.open(vids[+r.dataset.i].url, "_blank", "noopener");
+    };
+  }
+
+  /* ---------- header & totals ---------- */
+  const T = R.totals;
+  $("#meta").innerHTML = `Snapshot ${date(R.generated_ts, true)}` +
+    (R.prev_ts ? ` · Δ vs ${date(R.prev_ts, true)}` : " · first snapshot, Δ will appear from the next run") +
+    ` · ${T.accounts} accounts, last ${R.videos_per_account} videos each`;
+  $("#hero").innerHTML =
+    tile("Views of videos from the last 7 days", compact(T.views_7d), `last 30 days: ${compact(T.views_30d)}`, "hero-tile") +
+    tile("Followers", compact(T.followers) + delta(T.followers_delta), "all accounts") +
+    tile("Posts in the last 7 days", full(T.posts_7d), "") +
+    tile("Gained since last snapshot", T.views_gained == null ? "—" : compact(T.views_gained), "views") +
+    tile("Accounts with signals", `${T.accounts_with_warnings} <span class="sub" style="font-size:14px;font-weight:400">of ${T.accounts}</span>`, "");
+
+  const noteItems = notes => notes.map(x => `<li><time>${esc(x.date)}</time>${esc(x.text)}</li>`).join("");
+  if (R.notes?.length) {
+    $("#general-notes").hidden = false;
+    $("#general-notes .notes").innerHTML = noteItems(R.notes);
+  }
+
+  const M = a => a.metrics;
+  table($("#overview"), [
+    { label: "Account", sort: a => a.handle, html: a => `<a href="#acc-${esc(a.handle)}">@${esc(a.handle)}</a>` },
+    { label: "Followers", num: 1, sort: a => M(a).followers, html: a => full(M(a).followers) + delta(M(a).followers_delta) },
+    { label: "Posts 7d", num: 1, sort: a => M(a).posts_7d, html: a => full(M(a).posts_7d) },
+    { label: "Median views", num: 1, sort: a => M(a).median_views, html: a => compact(M(a).median_views) },
+    { label: "Views 7d", num: 1, sort: a => M(a).views_7d, html: a => compact(M(a).views_7d) },
+    { label: "Since last snapshot", num: 1, sort: a => M(a).views_gained, html: a => M(a).views_gained == null ? "—" : "+" + compact(M(a).views_gained) },
+    { label: "ER", num: 1, sort: a => M(a).er, html: a => pct(M(a).er) },
+    { label: "Trend", num: 1, sort: a => M(a).trend_last5, html: a => M(a).trend_last5 == null ? "—" : "×" + M(a).trend_last5.toFixed(2) },
+    { label: "Last post", num: 1, sort: a => M(a).days_since_last_post == null ? null : -M(a).days_since_last_post, html: a => ago(M(a).days_since_last_post) },
+    { label: "Signals", html: a => flagIcons(M(a).flags) },
+  ], R.accounts);
+
+  /* ---------- account cards ---------- */
+  const cards = $("#cards");
+  for (const a of R.accounts) {
+    const p = a.profile, m = a.metrics;
+    const el = document.createElement("article");
+    el.className = "card";
+    el.id = "acc-" + a.handle;
+    const link = `https://www.tiktok.com/@${a.handle}`;
+    let h = `<header><div>
+        <h3>${esc(p?.nickname || "@" + a.handle)}${p?.verified ? '<span class="badge">verified</span>' : ""}${p?.private ? '<span class="badge">private</span>' : ""}</h3>
+        <a class="handle" href="${link}" target="_blank" rel="noopener">@${esc(a.handle)}</a>
+      </div></header>`;
+    if (p?.bio) h += `<p class="bio">${esc(p.bio)}</p>`;
+    if (m.flags.length) h += `<div class="flags">${m.flags.map(flagChip).join("")}</div>`;
+    if (a.notes?.length) h += `<div class="notes-title">Notes</div><ul class="notes">${noteItems(a.notes)}</ul>`;
+    if (p) {
+      h += `<div class="tiles">
+        ${tile("Followers", compact(p.followers) + delta(m.followers_delta), `following: ${compact(p.following)}`)}
+        ${tile("Total likes", compact(p.likes) + delta(m.likes_delta), `videos: ${full(p.videos)}`)}
+        ${tile("Median views", compact(m.median_views), `max ${compact(m.max_views)} · mean ${compact(m.avg_views)}`)}
+        ${tile("ER", pct(m.er), `≥1K on ${pct(m.hit_rate_1k)} of videos`)}
+        ${tile("Posts 7d / 30d", `${m.posts_7d} / ${m.posts_30d}${m.posts_30d_is_lower_bound ? "+" : ""}`, m.trend_last5 == null ? "" : `trend ×${m.trend_last5.toFixed(2)}`)}
+        ${tile("Last post", ago(m.days_since_last_post), m.last_post_ts ? date(m.last_post_ts, true) : "")}
+      </div>`;
+    }
+    if (a.videos.length) {
+      h += `<figure><figcaption><b>Views per video</b> · last ${a.videos.length}, oldest → newest · faded bars are under a day old · click a bar to open the video</figcaption>
+        <div class="chart-box"></div></figure>
+        <details><summary>Video table (${a.videos.length})</summary><div class="table-wrap"><table class="vt"></table></div></details>`;
+    } else if (p && !p.private && !a.error) {
+      h += `<p class="empty">No videos.</p>`;
+    }
+    el.innerHTML = h;
+    cards.appendChild(el);
+    if (!a.videos.length) continue;
+
+    table($(".vt", el), [
+      { label: "Date", sort: v => v.ts, html: v => `${date(v.ts, true)}<div class="sub">${ago(v.age_days)}</div>` },
+      { label: "Views", num: 1, sort: v => v.views, html: v => full(v.views) },
+      { label: "Δ", num: 1, sort: v => v.views_delta, html: v => v.views_delta == null ? '<span class="sub">—</span>' : (v.views_delta >= 0 ? "+" : "−") + compact(Math.abs(v.views_delta)) },
+      { label: "Likes", num: 1, sort: v => v.likes, html: v => compact(v.likes) },
+      { label: "Comments", num: 1, sort: v => v.comments, html: v => compact(v.comments) },
+      { label: "Shares", num: 1, sort: v => v.shares, html: v => compact(v.shares) },
+      { label: "Saves", num: 1, sort: v => v.saves, html: v => compact(v.saves) },
+      { label: "ER", num: 1, sort: v => v.er, html: v => pct(v.er) },
+      { label: "Length", num: 1, sort: v => v.duration, html: v => v.duration ? v.duration + " s" : "—" },
+      { label: "Caption", cls: "caption", html: v => `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.caption || "(no caption)")}</a>` },
+    ], a.videos);
+
+    const box = $(".chart-box", el);
+    let w = 0;
+    new ResizeObserver(() => {
+      if (box.clientWidth !== w) { w = box.clientWidth; drawChart(box, a); }
+    }).observe(box);
+  }
+  addEventListener("scroll", hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

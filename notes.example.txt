@@ -1,0 +1,5 @@
+# Log of what you did with your accounts. Copy this file to notes.txt.
+# Notes show up in the reports next to the numbers, so the reason behind growth or a drop is visible.
+# Format: YYYY-MM-DD @handle: what happened   (without @handle the note applies to all accounts)
+2026-10-03 @your_account: added a link to the bio
+2026-10-05: started posting in the evening instead of the morning

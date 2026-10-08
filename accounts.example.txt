@@ -1,0 +1,5 @@
+# TikTok accounts, one per line. Copy this file to accounts.txt.
+# A username, @username or a profile link all work. Lines starting with # are ignored.
+tiktok
+@khaby.lame
+https://www.tiktok.com/@nasa

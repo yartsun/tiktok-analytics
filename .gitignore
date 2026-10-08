@@ -1,0 +1,14 @@
+out/
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.env
+.env.*
+
+# personal data: your accounts, your notes, your private agent rules
+accounts.txt
+notes.txt
+CLAUDE.local.md
